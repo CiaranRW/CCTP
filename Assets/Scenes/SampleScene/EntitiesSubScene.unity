@@ -256,7 +256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f80bc93ba0ce5941ae9dffcf689cb37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnCooldown: 1
+  spawnCooldown: 10
   enemiesSO:
   - {fileID: 11400000, guid: 64ad1583a39b95340b2bb670b2facd1c, type: 2}
   - {fileID: 11400000, guid: ba9222cd2ff5e1f468707d402b41bc78, type: 2}

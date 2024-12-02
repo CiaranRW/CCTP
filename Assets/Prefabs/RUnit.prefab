@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -6149300703239878517, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
+      propertyPath: timerMax
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1947586847355545825, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Name
       value: RUnit
@@ -106,6 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 5
   targetFaction: 1
+  timerMax: 2
 --- !u!114 &-7049152310248993589
 MonoBehaviour:
   m_ObjectHideFlags: 0

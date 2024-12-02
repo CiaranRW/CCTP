@@ -16,14 +16,22 @@ partial struct FindTargetSysetm : ISystem
 
         foreach ((
             RefRO<LocalTransform> localTransform,
-            RefRO<FindTarget> findTarget,
+            RefRW<FindTarget> findTarget,
             RefRW<Target> target)
 
             in SystemAPI.Query<
                 RefRO<LocalTransform>,
-                RefRO<FindTarget>,
+                RefRW<FindTarget>,
                 RefRW<Target>>())
         {
+            findTarget.ValueRW.timer -= SystemAPI.Time.DeltaTime;
+
+            if (findTarget.ValueRO.timer > 0f)
+            {
+                continue;
+            }
+            findTarget.ValueRW.timer = findTarget.ValueRO.timerMax;
+
             distanceHitList.Clear();
             CollisionFilter collisionfilter = new CollisionFilter
             {
@@ -31,7 +39,6 @@ partial struct FindTargetSysetm : ISystem
                 CollidesWith = 1u << GameAssets.UNITS_LAYER,
                 GroupIndex = 0,
             };
-            //Debug.Log("-");
             if (collisionWorld.OverlapSphere(localTransform.ValueRO.Position, findTarget.ValueRO.range, ref distanceHitList, collisionfilter))
             {
                 foreach (DistanceHit distanceHit in distanceHitList)
@@ -40,7 +47,6 @@ partial struct FindTargetSysetm : ISystem
                     if (targetUnit.faction == findTarget.ValueRO.targetFaction)
                     {
                         target.ValueRW.targetEntity = distanceHit.Entity;
-                        //Debug.Log(distanceHit.Entity);
                         break;
                     }
                 }

@@ -14,7 +14,7 @@ using Unity.Mathematics;
     {
         entityManager = state.EntityManager;
         //playerEntity = SystemAPI.GetSingletonEntity<EnemyComponent>();
-        enemyEntity = SystemAPI.GetEntityTypeHandle<EnemyComponent>();
+        //enemyEntity = SystemAPI.GetSingletonEntity<EnemyComponent>();
 
         //reds = GameObject.FindGameObjectsWithTag("Red");
         //blues = GameObject.FindGameObjectsWithTag("Blue");
