@@ -25,12 +25,6 @@ partial struct MeleeAttackSystem : ISystem
                 continue;
             }
 
-            //meleeAttack.ValueRW.timer -= SystemAPI.Time.DeltaTime;
-            //if (meleeAttack.ValueRO.timer > 0 ) 
-            //{
-            //    continue;
-            //}
-            //meleeAttack.ValueRW.timer = meleeAttack.ValueRO.timerMax;
             LocalTransform targetLocalTransform = SystemAPI.GetComponent<LocalTransform>(target.ValueRO.targetEntity);
             float meleeAttackDistanceSq = 2f;
             if (math.distancesq(LocalTransform.ValueRO.Position, targetLocalTransform.Position) > meleeAttackDistanceSq)
@@ -49,9 +43,13 @@ partial struct MeleeAttackSystem : ISystem
                     continue;
                 }
                 meleeAttack.ValueRW.timer = meleeAttack.ValueRO.timerMax;
+
+                RefRW<Health> targetHealth = SystemAPI.GetComponentRW<Health>(target.ValueRO.targetEntity);
+                targetHealth.ValueRW.healthAmount -= meleeAttack.ValueRO.damageAmount;
+                //targetHealth.ValueRW.OnHealthChanged = true
+                //int damageAmount = 1;
+                //targetHealth.ValueRW.healthAmount -= damageAmount;
             }
-
-
         }
     }
 

@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 4903114321702781210}
   - component: {fileID: 26063722811359638}
   - component: {fileID: 6645594117178008577}
+  - component: {fileID: 8700497760308743419}
   - component: {fileID: -3591485744184516350}
   - component: {fileID: -6149300703239878517}
-  - component: {fileID: 8700497760308743419}
+  - component: {fileID: 4115079798336417503}
   m_Layer: 6
   m_Name: Unit
   m_TagString: Untagged
@@ -87,6 +88,20 @@ CapsuleCollider:
   m_Height: 0.6
   m_Direction: 1
   m_Center: {x: 0, y: 0.3, z: 0}
+--- !u!114 &8700497760308743419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947586847355545825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 009183a3692aa60408689a6924bfaa22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 1
+  rotationSpeed: 15
 --- !u!114 &-3591485744184516350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,7 +127,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerMax: 1
---- !u!114 &8700497760308743419
+  damageAmount: 10
+--- !u!114 &4115079798336417503
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,11 +137,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1947586847355545825}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 009183a3692aa60408689a6924bfaa22, type: 3}
+  m_Script: {fileID: 11500000, guid: 47a9e8b0c071fac439bdeedbd81d95d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
-  rotationSpeed: 15
+  healthAmount: 100
 --- !u!1 &5486329209889324188
 GameObject:
   m_ObjectHideFlags: 0
