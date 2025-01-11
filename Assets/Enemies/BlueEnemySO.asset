@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 742ea63e0ec9e624ea86982d298ba9ef, type: 3}
-  m_Name: Enemy 1
+  m_Name: BlueEnemySO
   m_EditorClassIdentifier: 
   level: 1
-  prefab: {fileID: 2152554737255048205, guid: 7451558cfa08fb147932dc27e021d193, type: 3}
+  prefab: {fileID: 5819684605672807038, guid: d48fd367be5c17545a2e6f821dc8a1fe, type: 3}
   health: 50
   speed: 10
   damage: 10

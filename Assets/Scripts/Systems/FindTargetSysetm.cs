@@ -44,6 +44,7 @@ partial struct FindTargetSysetm : ISystem
                 foreach (DistanceHit distanceHit in distanceHitList)
                 {
                     Unit targetUnit = SystemAPI.GetComponent<Unit>(distanceHit.Entity);
+
                     if (targetUnit.faction == findTarget.ValueRO.targetFaction)
                     {
                         target.ValueRW.targetEntity = distanceHit.Entity;

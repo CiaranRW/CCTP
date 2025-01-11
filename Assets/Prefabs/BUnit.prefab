@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4360610186292236635, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1947586847355545825, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Name
       value: BUnit
@@ -104,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519949136f6dbf44e848982b0efcc2cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 3
+  range: 20
   targetFaction: 0
   timerMax: 2
 --- !u!114 &-6666745540424826028
