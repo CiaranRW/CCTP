@@ -6,6 +6,7 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
 
     public GameObject BenemyPrefab;
     public GameObject RenemyPrefab;
+    public GameObject player;
 
     public class Baker : Baker<EntitiesReferencesAuthoring> 
     {
@@ -15,7 +16,8 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
             AddComponent(entity, new EntitiesReferences
             {
                 BenemyPrefab = GetEntity(authoring.BenemyPrefab, TransformUsageFlags.Dynamic),
-                RenemyPrefab = GetEntity(authoring.RenemyPrefab, TransformUsageFlags.Dynamic)
+                RenemyPrefab = GetEntity(authoring.RenemyPrefab, TransformUsageFlags.Dynamic),
+                player = GetEntity(authoring.player, TransformUsageFlags.Dynamic)
             });
         }
     }
@@ -27,4 +29,5 @@ public struct EntitiesReferences : IComponentData
 {
     public Entity BenemyPrefab;
     public Entity RenemyPrefab;
+    public Entity player;
 }

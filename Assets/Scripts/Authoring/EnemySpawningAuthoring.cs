@@ -5,6 +5,11 @@ public class EnemySpawningAuthoring : MonoBehaviour
 {
 
     public float timerMax;
+    public float randomWalkingDistanceMin;
+    public float randomWalkingDistanceMax;
+    public bool swap = false;
+    public bool spawn = false;
+
 
     public class Baker : Baker<EnemySpawningAuthoring>
     {
@@ -14,6 +19,10 @@ public class EnemySpawningAuthoring : MonoBehaviour
             AddComponent(entity, new EnemySpawner
             {
                 timerMax = authoring.timerMax,
+                randomWalkingDistanceMin = authoring.randomWalkingDistanceMin,
+                randomWalkingDistanceMax = authoring.randomWalkingDistanceMax,
+                swap = authoring.swap,
+                spawn = authoring.spawn,
             });
         }
     }
@@ -24,4 +33,8 @@ public struct EnemySpawner : IComponentData
 {
     public float timer;
     public float timerMax;
+    public float randomWalkingDistanceMin;
+    public float randomWalkingDistanceMax;
+    public bool swap;
+    public bool spawn;
 }

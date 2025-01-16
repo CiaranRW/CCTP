@@ -1,6 +1,7 @@
 using Unity.Entities;
 using UnityEngine;
 using Unity.Mathematics;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class NavAgentAuthoring : MonoBehaviour
 {

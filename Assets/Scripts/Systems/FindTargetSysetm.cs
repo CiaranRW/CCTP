@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.AI;
 
 partial struct FindTargetSysetm : ISystem
 {
@@ -17,12 +18,18 @@ partial struct FindTargetSysetm : ISystem
         foreach ((
             RefRO<LocalTransform> localTransform,
             RefRW<FindTarget> findTarget,
-            RefRW<Target> target)
+            RefRW<Target> target
+            
+            //,RefRW<NavAgentComponent> navAgent
+            ) 
 
             in SystemAPI.Query<
                 RefRO<LocalTransform>,
                 RefRW<FindTarget>,
-                RefRW<Target>>())
+                RefRW<Target>
+
+                //,RefRW<NavAgentComponent>
+                >())
         {
             findTarget.ValueRW.timer -= SystemAPI.Time.DeltaTime;
 
@@ -30,6 +37,7 @@ partial struct FindTargetSysetm : ISystem
             {
                 continue;
             }
+
             findTarget.ValueRW.timer = findTarget.ValueRO.timerMax;
 
             distanceHitList.Clear();
@@ -48,6 +56,7 @@ partial struct FindTargetSysetm : ISystem
                     if (targetUnit.faction == findTarget.ValueRO.targetFaction)
                     {
                         target.ValueRW.targetEntity = distanceHit.Entity;
+                        //navAgent.ValueRW.targetEntity = distanceHit.Entity;
                         break;
                     }
                 }

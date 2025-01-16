@@ -6,48 +6,49 @@ using UnityEngine.Experimental.AI;
 using Unity.Mathematics;
 using Unity.Collections;
 using Unity.Physics;
-using Unity.VisualScripting;
+using System.Net;
 
-[BurstCompile]
-public partial struct NavAgentSystem : ISystem
+/*[BurstCompile]
+public partial struct NavAgentSystemMine : ISystem
 {
     [BurstCompile]
 
     private void OnUpdate(ref SystemState state)
     {
 
-        foreach (var (navAgent, transform, entity) in SystemAPI.Query<RefRW<NavAgentComponent>, RefRW<LocalTransform>>().WithEntityAccess())
+        foreach (var (navAgent, unitMover, transform, entity) in SystemAPI.Query<RefRW<NavAgentComponent>, RefRW<UnitMover>, RefRW<LocalTransform>>().WithEntityAccess())
         {
             if (navAgent.ValueRO.targetEntity == Entity.Null)
             {
                 continue;
             }
 
-            DynamicBuffer<WaypointBuffer> waypointBuffer = state.EntityManager.GetBuffer<WaypointBuffer>(entity);
-
-            if(navAgent.ValueRO.nextPathCalculateTime < SystemAPI.Time.ElapsedTime)
             {
-                if(0 < SystemAPI.Time.ElapsedTime)
+                DynamicBuffer<WaypointBuffer> waypointBuffer = state.EntityManager.GetBuffer<WaypointBuffer>(entity);
+
+
+                if (navAgent.ValueRO.nextPathCalculateTime < SystemAPI.Time.ElapsedTime)
                 {
-                    navAgent.ValueRW.nextPathCalculateTime += 1;
-                    navAgent.ValueRW.pathCalculated = false;
-                    CalculatePath(navAgent, transform, waypointBuffer, ref state);
+                    if (0 < SystemAPI.Time.ElapsedTime)
+                    {
+                        navAgent.ValueRW.nextPathCalculateTime += 1;
+                        navAgent.ValueRW.pathCalculated = false;
+                        CalculatePath(navAgent, unitMover, transform, waypointBuffer, ref state);
+                    }
+                }
+                else
+                {
+                    if (waypointBuffer.Length != 0)
+                    {
+                        Move(navAgent, unitMover, transform, waypointBuffer, ref state);
+                    }
                 }
             }
-            else
-            {
-                if (waypointBuffer.Length != 0)
-                {
-                    Move(navAgent, transform, waypointBuffer, ref state);
-                }
-            }
-
         }
-
     }
 
     [BurstCompile]
-    private void Move(RefRW<NavAgentComponent> navAgent, RefRW<LocalTransform> transform, DynamicBuffer<WaypointBuffer> waypointBuffer,
+    private void Move(RefRW<NavAgentComponent> navAgent, RefRW<UnitMover> unitMover, RefRW<LocalTransform> transform, DynamicBuffer<WaypointBuffer> waypointBuffer,
         ref SystemState state)
     {
         if (math.distance(transform.ValueRO.Position, waypointBuffer[navAgent.ValueRO.currentWaypoint].wayPoint) < 0.4f)
@@ -67,14 +68,15 @@ public partial struct NavAgentSystem : ISystem
             SystemAPI.Time.DeltaTime);
 
         transform.ValueRW.Position += math.normalize(direction) * SystemAPI.Time.DeltaTime * navAgent.ValueRO.moveSpeed;
+        //unitMover.ValueRW.targetPosition = waypointBuffer[navAgent.ValueRO.currentWaypoint].wayPoint - transform.ValueRO.Position;
+        //unitMover.ValueRW.targetPosition += math.normalize(direction) * SystemAPI.Time.DeltaTime * navAgent.ValueRO.moveSpeed;
     }
 
     [BurstCompile]
-    private void CalculatePath(RefRW<NavAgentComponent> navAgent, RefRW<LocalTransform> transform, DynamicBuffer<WaypointBuffer> waypointBuffer,
+    private void CalculatePath(RefRW<NavAgentComponent> navAgent, RefRW<UnitMover> unitMover, RefRW<LocalTransform> transform, DynamicBuffer<WaypointBuffer> waypointBuffer,
         ref SystemState state)
     {
         NavMeshQuery query = new NavMeshQuery(NavMeshWorld.GetDefaultWorld(), Allocator.TempJob, 1000);
-
 
         float3 fromPosition = transform.ValueRO.Position;
         float3 toPosition = state.EntityManager.GetComponentData<LocalTransform>(navAgent.ValueRO.targetEntity).Position;
@@ -147,4 +149,4 @@ public partial struct NavAgentSystem : ISystem
 public struct WaypointBuffer : IBufferElementData
 {
     public float3 wayPoint;
-}
+}*/
