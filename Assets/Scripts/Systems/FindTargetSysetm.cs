@@ -20,7 +20,7 @@ partial struct FindTargetSysetm : ISystem
             RefRW<FindTarget> findTarget,
             RefRW<Target> target
             
-            //,RefRW<NavAgentComponent> navAgent
+            ,RefRW<NavAgentComponent> navAgent
             ) 
 
             in SystemAPI.Query<
@@ -28,7 +28,7 @@ partial struct FindTargetSysetm : ISystem
                 RefRW<FindTarget>,
                 RefRW<Target>
 
-                //,RefRW<NavAgentComponent>
+                ,RefRW<NavAgentComponent>
                 >())
         {
             findTarget.ValueRW.timer -= SystemAPI.Time.DeltaTime;
@@ -56,7 +56,7 @@ partial struct FindTargetSysetm : ISystem
                     if (targetUnit.faction == findTarget.ValueRO.targetFaction)
                     {
                         target.ValueRW.targetEntity = distanceHit.Entity;
-                        //navAgent.ValueRW.targetEntity = distanceHit.Entity;
+                        navAgent.ValueRW.targetEntity = distanceHit.Entity;
                         break;
                     }
                 }

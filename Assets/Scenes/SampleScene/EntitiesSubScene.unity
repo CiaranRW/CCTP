@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 438563203}
   - component: {fileID: 438563204}
   - component: {fileID: 438563205}
+  - component: {fileID: 438563206}
   m_Layer: 0
   m_Name: EnemySpawner
   m_TagString: Untagged
@@ -164,9 +165,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca90d95c9f662af44b15f84fedd7ceec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timerMax: 0.5
-  randomWalkingDistanceMin: 1
-  randomWalkingDistanceMax: 10
+  timerMax: 10000
+  randomWalkingDistanceMin: 10
+  randomWalkingDistanceMax: 100
   swap: 0
   spawn: 0
 --- !u!114 &438563205
@@ -181,10 +182,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f80bc93ba0ce5941ae9dffcf689cb37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnCooldown: 0.1
+  spawnCooldown: 1
   enemiesSO:
   - {fileID: 11400000, guid: ba9222cd2ff5e1f468707d402b41bc78, type: 2}
   - {fileID: 11400000, guid: 64ad1583a39b95340b2bb670b2facd1c, type: 2}
+--- !u!114 &438563206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 438563201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f80bc93ba0ce5941ae9dffcf689cb37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnCooldown: 1
+  enemiesSO:
+  - {fileID: 11400000, guid: ba9222cd2ff5e1f468707d402b41bc78, type: 2}
 --- !u!1 &912576578
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,7 +232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BenemyPrefab: {fileID: 5819684605672807038, guid: d48fd367be5c17545a2e6f821dc8a1fe, type: 3}
   RenemyPrefab: {fileID: 2152554737255048205, guid: 7451558cfa08fb147932dc27e021d193, type: 3}
-  player: {fileID: 3794945658018832501, guid: 9dd315cf020f3034c953b6353a43e7ec, type: 3}
+  player: {fileID: 2152554737255048205, guid: 7451558cfa08fb147932dc27e021d193, type: 3}
 --- !u!4 &912576580
 Transform:
   m_ObjectHideFlags: 0
