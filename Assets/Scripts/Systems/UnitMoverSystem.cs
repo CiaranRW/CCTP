@@ -1,66 +1,49 @@
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
-using Unity.Transforms;
 using Unity.Mathematics;
-using UnityEngine;
 using Unity.Physics;
-using System;
+using Unity.Transforms;
 
 partial struct UnitMoverSystem : ISystem
 {
-
     public const float REACHED_TARGET_POSITION_DISTANCE_SQ = 2f;
+    public const float SEPARATION_RADIUS = 3f;
+    public const float SEPARATION_FORCE_MULTIPLIER = 2f;
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        UnitMoverJob unitMoverJob = new UnitMoverJob 
+        NativeList<float3> entityPositions = new NativeList<float3>(Allocator.TempJob);
+
+        foreach (var localTransform in SystemAPI.Query<LocalTransform>())
+        {
+            entityPositions.Add(localTransform.Position);
+        }
+
+        UnitMoverJob unitMoverJob = new UnitMoverJob
         {
             deltaTime = SystemAPI.Time.DeltaTime,
+            entityPositions = entityPositions.AsReadOnly()
         };
+
         unitMoverJob.ScheduleParallel();
-        /*
-        foreach ((
-            RefRW<LocalTransform> localTransform,
-            RefRO<UnitMover> unitMover,
-            RefRW<PhysicsVelocity> physicsVelocity)
-            in SystemAPI.Query<
-                RefRW<LocalTransform>,
-                RefRO<UnitMover>,
-                RefRW<PhysicsVelocity>>())
-        {
-
-            float3 moveDirection = unitMover.ValueRO.targetPosition - localTransform.ValueRO.Position;
-            moveDirection = math.normalize(moveDirection);
-
-            localTransform.ValueRW.Rotation =
-                math.slerp(localTransform.ValueRO.Rotation,
-                    quaternion.LookRotation(moveDirection, math.up()),
-                    SystemAPI.Time.DeltaTime * unitMover.ValueRO.rotationSpeed);
-            
-            physicsVelocity.ValueRW.Linear = moveDirection * unitMover.ValueRO.moveSpeed;
-            physicsVelocity.ValueRW.Angular = float3.zero;
-        }
-        */
+        state.Dependency = entityPositions.Dispose(state.Dependency);
     }
 }
+
 
 [BurstCompile]
 public partial struct UnitMoverJob : IJobEntity
 {
     public float deltaTime;
-    public void Execute(ref LocalTransform localTransform,in UnitMover unitMover, ref PhysicsVelocity physicsVelocity)
+    [ReadOnly] public NativeArray<float3>.ReadOnly entityPositions;
+
+    public void Execute(ref LocalTransform localTransform, in UnitMover unitMover, ref PhysicsVelocity physicsVelocity)
     {
-        //var neighbours = GetNeighbours(ref localTransform);
-/*
-        if (neighbours.Length > 0)
-        {
-            CalculateSeperationForce(ref localTransform, neighbours);
-            
-        }*/
+        float3 separationForce = CalculateSeparationForce(localTransform.Position);
 
         float3 moveDirection = unitMover.targetPosition - localTransform.Position;
-
         float reachedTargetDistanceSQ = UnitMoverSystem.REACHED_TARGET_POSITION_DISTANCE_SQ;
         if (math.lengthsq(moveDirection) <= reachedTargetDistanceSQ)
         {
@@ -68,10 +51,12 @@ public partial struct UnitMoverJob : IJobEntity
             physicsVelocity.Angular = float3.zero;
             return;
         }
+
+        moveDirection = math.normalize(moveDirection);
+        moveDirection += separationForce;
         moveDirection = math.normalize(moveDirection);
 
-        localTransform.Rotation =
-            math.slerp(localTransform.Rotation,
+        localTransform.Rotation = math.slerp(localTransform.Rotation,
             quaternion.LookRotation(moveDirection, math.up()),
             deltaTime * unitMover.rotationSpeed);
 
@@ -79,26 +64,24 @@ public partial struct UnitMoverJob : IJobEntity
         physicsVelocity.Angular = float3.zero;
     }
 
-/*    private void CalculateSeperationForce(ref LocalTransform localTransform, UnityEngine.Collider[] neighbours)
+    private float3 CalculateSeparationForce(float3 position)
     {
-        Vector3 m_seperationforce = Vector3.zero;
-        foreach (var neighbour in neighbours) 
-        {
-            Vector3 test = localTransform.Position;
-            var dir = neighbour.transform.position - test;
-            var distance = dir.magnitude;
-            var away = -dir.normalized;
+        float3 separationForce = float3.zero;
+        float separationRadius = UnitMoverSystem.SEPARATION_RADIUS;
 
-            if (distance > 0)
+        foreach (float3 otherPosition in entityPositions)
+        {
+            if (math.distance(position, otherPosition) == 0f) continue;
+
+            float3 direction = position - otherPosition;
+            float distance = math.length(direction);
+
+            if (distance < separationRadius)
             {
-                m_seperationforce += away / distance;
+                separationForce += math.normalize(direction) / distance;
             }
         }
-    }*/
 
-/*    private UnityEngine.Collider[] GetNeighbours(ref LocalTransform localTransform)
-    {
-        var enemyMask = LayerMask.GetMask("Units");
-        return Physics.OverlapSphere(localTransform.Position, 1f, enemyMask);
-    }*/
+        return separationForce * UnitMoverSystem.SEPARATION_FORCE_MULTIPLIER;
+    }
 }

@@ -35,7 +35,7 @@ partial struct EnemySpawningSystem : ISystem
                 enemySpawner.ValueRW.spawn = true;
             }
 
-            if (enemySpawner.ValueRO.swap == false)
+/*            if (enemySpawner.ValueRO.swap == false)
             {
                 Entity BenemyEntity = state.EntityManager.Instantiate(entitiesReferences.BenemyPrefab);
                 SystemAPI.SetComponent(BenemyEntity, LocalTransform.FromPosition(localTransform.ValueRO.Position));
@@ -51,7 +51,7 @@ partial struct EnemySpawningSystem : ISystem
                 });
 
                 enemySpawner.ValueRW.swap = true;
-            }
+            }*/
             else if (enemySpawner.ValueRO.swap == true)
             {
 

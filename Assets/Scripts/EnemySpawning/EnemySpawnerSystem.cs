@@ -1,22 +1,21 @@
 using UnityEngine;
 using Unity.Entities;
-using System.Collections.Generic;
 using Unity.Transforms;
 using Unity.Mathematics;
 using Random = Unity.Mathematics.Random;
-using UnityEngine.UIElements;
+using System.Collections.Generic;
 
 public partial class EnemySpawnerSystem : SystemBase
 {
-    private EnemySpawnerComponent enemySpawnerComponent;
-    private EnemyDataContainer EnemyDataContainerComponent;
     private Entity enemySpawnerEntity;
+    private EnemySpawnerComponent enemySpawnerComponent;
+    private EnemyDataContainer enemyDataContainerComponent;
     private float nextSpawnTime;
     private Random random;
 
     protected override void OnCreate()
     {
-        random = Random.CreateFromIndex((uint)enemySpawnerComponent.GetHashCode()); //random number
+        random = Random.CreateFromIndex(1);
     }
 
     protected override void OnUpdate()
@@ -27,66 +26,57 @@ public partial class EnemySpawnerSystem : SystemBase
         }
 
         enemySpawnerComponent = EntityManager.GetComponentData<EnemySpawnerComponent>(enemySpawnerEntity);
-        EnemyDataContainerComponent = EntityManager.GetComponentObject<EnemyDataContainer>(enemySpawnerEntity);
+        enemyDataContainerComponent = EntityManager.GetComponentObject<EnemyDataContainer>(enemySpawnerEntity);
 
-        if (SystemAPI.Time.ElapsedTime > nextSpawnTime) 
+        Debug.Log("Current spawnCooldown: " + enemySpawnerComponent.spawnCooldown);
+
+        if (SystemAPI.Time.ElapsedTime > nextSpawnTime)
         {
-            SpawnEnemy(); //spawn
+            SpawnEnemy();
+            nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + enemySpawnerComponent.spawnCooldown;
         }
     }
 
+    // Function that spawns an enemy
     private void SpawnEnemy()
     {
         int level = 2;
         List<EnemyData> availableEnemies = new List<EnemyData>();
 
-        foreach (EnemyData enemyData in EnemyDataContainerComponent.enemies)
+        foreach (EnemyData enemyData in enemyDataContainerComponent.enemies)
         {
-            if (enemyData.level <= level) 
+            if (enemyData.level <= level)
             {
-                availableEnemies.Add(enemyData); //under level 2 then spawn
+                availableEnemies.Add(enemyData);
             }
+        }
+
+ 
+        if (availableEnemies.Count == 0)
+        {
+            return;
         }
 
         int index = random.NextInt(availableEnemies.Count);
 
-        Entity newEnemy = EntityManager.Instantiate(availableEnemies[index].prefab); //finds random prefab then spawns in enemy
+        Entity selectedEnemyPrefab = availableEnemies[index].prefab;
+        Entity newEnemy = EntityManager.Instantiate(selectedEnemyPrefab);
+
         EntityManager.SetComponentData(newEnemy, new LocalTransform
         {
-            Position = getPositionOutsideofCameraRange(),
+            Position = GetPositionOutsideOfCameraRange(),
             Rotation = quaternion.identity,
             Scale = 1
         });
 
-        EntityManager.AddComponentData(newEnemy,new EnemyComponent { currentHealth = availableEnemies[index].health }); //giving the enemy health
-        //EntityManager.AddComponentData(newEnemy, new EnemyComponent { currentTeam = availableEnemies[index].team });
-
         nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + enemySpawnerComponent.spawnCooldown;
     }
-    /*private float3 getPositionOutsideofCameraRange()
-    {
-        float3 position = new float3(random.NextFloat2(-enemySpawnerComponent.cameraSize * 2, enemySpawnerComponent.cameraSize * 2), 0);
 
-        while (position.x < enemySpawnerComponent.cameraSize.x && position.x > -enemySpawnerComponent.cameraSize.x
-            && position.y < enemySpawnerComponent.cameraSize.y && position.y > -enemySpawnerComponent.cameraSize.y)
-        {
-            position = new float3(random.NextFloat2(-enemySpawnerComponent.cameraSize * 2, enemySpawnerComponent.cameraSize * 2), 0);
-        }
-
-        position += new float3(Camera.main.transform.position.x, 0, Camera.main.transform.position.y);
-        //position.y = 0;
-
-        return position;
-    }*/
-
-    private float3 getPositionOutsideofCameraRange()
+    private float3 GetPositionOutsideOfCameraRange()
     {
         float3 position = new float3(random.NextFloat3(-10, 10));
-
         position.y = 0;
 
         return position;
     }
 }
-
-

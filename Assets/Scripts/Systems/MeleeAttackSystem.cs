@@ -12,20 +12,20 @@ partial struct MeleeAttackSystem : ISystem
         foreach ((
             RefRO <LocalTransform > LocalTransform,
             RefRW<MeleeAttack> meleeAttack,
-            RefRO<Target> target,
+            RefRO<Team> team,
             RefRW<UnitMover> unitMover)
             in SystemAPI.Query<
                 RefRO<LocalTransform>,
                 RefRW<MeleeAttack>,
-                RefRO<Target>,
+                RefRO<Team>,
                 RefRW<UnitMover>>())
         {
-            if (target.ValueRO.targetEntity == Entity.Null) 
+            if (team.ValueRO.teamEntity == Entity.Null) 
             {
                 continue;
             }
 
-            LocalTransform targetLocalTransform = SystemAPI.GetComponent<LocalTransform>(target.ValueRO.targetEntity);
+            LocalTransform targetLocalTransform = SystemAPI.GetComponent<LocalTransform>(team.ValueRO.teamEntity);
             float meleeAttackDistanceSq = 2f;
             if (math.distancesq(LocalTransform.ValueRO.Position, targetLocalTransform.Position) > meleeAttackDistanceSq)
             {
@@ -44,7 +44,7 @@ partial struct MeleeAttackSystem : ISystem
                 }
                 meleeAttack.ValueRW.timer = meleeAttack.ValueRO.timerMax;
 
-                RefRW<Health> targetHealth = SystemAPI.GetComponentRW<Health>(target.ValueRO.targetEntity);
+                RefRW<Health> targetHealth = SystemAPI.GetComponentRW<Health>(team.ValueRO.teamEntity);
                 targetHealth.ValueRW.healthAmount -= meleeAttack.ValueRO.damageAmount;
                 //targetHealth.ValueRW.OnHealthChanged = true
                 //int damageAmount = 1;

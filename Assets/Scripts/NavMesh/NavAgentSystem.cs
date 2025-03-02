@@ -23,8 +23,6 @@ public partial struct NavAgentSystem : ISystem
     }*/
     private void OnUpdate(ref SystemState state)
     {
-
-
         foreach (var (navAgent, transform, entity) in SystemAPI.Query<RefRW<NavAgentComponent>, RefRW<LocalTransform>>().WithEntityAccess())
         {
             if (navAgent.ValueRO.targetEntity == Entity.Null)
@@ -52,9 +50,7 @@ public partial struct NavAgentSystem : ISystem
                     Move(navAgent, transform, waypointBuffer, ref state);
                 }
             }
-
         }
-
     }
 
     [BurstCompile]

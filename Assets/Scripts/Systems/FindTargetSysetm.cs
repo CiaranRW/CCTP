@@ -18,7 +18,8 @@ partial struct FindTargetSysetm : ISystem
         foreach ((
             RefRO<LocalTransform> localTransform,
             RefRW<FindTarget> findTarget,
-            RefRW<Target> target
+            RefRW<Target> target,
+            RefRW<FindTeam> findTeam
             
             ,RefRW<NavAgentComponent> navAgent
             ) 
@@ -26,7 +27,8 @@ partial struct FindTargetSysetm : ISystem
             in SystemAPI.Query<
                 RefRO<LocalTransform>,
                 RefRW<FindTarget>,
-                RefRW<Target>
+                RefRW<Target>,
+                RefRW<FindTeam>
 
                 ,RefRW<NavAgentComponent>
                 >())
