@@ -9,6 +9,7 @@ public class EnemySpawningAuthoring : MonoBehaviour
     public float randomWalkingDistanceMax;
     public bool swap = false;
     public bool spawn = false;
+    public Entity spawnedEntity;
 
 
     public class Baker : Baker<EnemySpawningAuthoring>
@@ -23,6 +24,7 @@ public class EnemySpawningAuthoring : MonoBehaviour
                 randomWalkingDistanceMax = authoring.randomWalkingDistanceMax,
                 swap = authoring.swap,
                 spawn = authoring.spawn,
+                spawnedEntity = authoring.spawnedEntity
             });
         }
     }
@@ -37,4 +39,5 @@ public struct EnemySpawner : IComponentData
     public float randomWalkingDistanceMax;
     public bool swap;
     public bool spawn;
+    public Entity spawnedEntity;
 }

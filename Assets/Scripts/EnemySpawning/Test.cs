@@ -29,12 +29,12 @@ public class Test : MonoBehaviour
 
     public void DecreaseCooldown()
     {
-        Timer -= 0.05f;
+        Timer -= 0.5f;
         UpdateCooldown();
     }
     public void IncreaseCooldown()
     {
-        Timer += 0.05f;
+        Timer += 0.5f;
         UpdateCooldown();
     }
 }

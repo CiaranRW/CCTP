@@ -74,7 +74,7 @@ public partial class EnemySpawnerSystem : SystemBase
 
     private float3 GetPositionOutsideOfCameraRange()
     {
-        float3 position = new float3(random.NextFloat3(-10, 10));
+        float3 position = new float3(random.NextFloat3(-15, 15));
         position.y = 0;
 
         return position;

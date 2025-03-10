@@ -14,6 +14,9 @@ partial struct EnemySpawningSystem : ISystem
         EntityCommandBuffer entityCommandBuffer =
             SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
+        uint seed = (uint)(SystemAPI.Time.ElapsedTime * 1000) + 1;
+        Random random = new Random(seed);
+
         foreach ((
             RefRO<LocalTransform> localTransform,
             RefRW<EnemySpawner > enemySpawner)
@@ -28,12 +31,22 @@ partial struct EnemySpawningSystem : ISystem
             }
             enemySpawner.ValueRW.timer = enemySpawner.ValueRO.timerMax;
 
-            if (enemySpawner.ValueRO.spawn == false)
+            if (enemySpawner.ValueRO.spawnedEntity == Entity.Null)
             {
                 Entity entity = state.EntityManager.Instantiate(entitiesReferences.player);
-                SystemAPI.SetComponent(entity, LocalTransform.FromPosition(2, 0, -5));
-                enemySpawner.ValueRW.spawn = true;
+                enemySpawner.ValueRW.spawnedEntity = entity;
+                SystemAPI.SetComponent(entity, LocalTransform.FromPosition(0, 0, 0));
             }
+            else
+            {
+                float3 randomPosition = new float3(
+                random.NextFloat(-15f, 15f),
+                0f,
+                random.NextFloat(-15f, 15f)
+);
+                SystemAPI.SetComponent(enemySpawner.ValueRW.spawnedEntity, LocalTransform.FromPosition(randomPosition));
+            }
+
 
 /*            if (enemySpawner.ValueRO.swap == false)
             {
@@ -52,7 +65,7 @@ partial struct EnemySpawningSystem : ISystem
 
                 enemySpawner.ValueRW.swap = true;
             }*/
-            else if (enemySpawner.ValueRO.swap == true)
+/*            else if (enemySpawner.ValueRO.swap == true)
             {
 
                 Entity RenemyEntity = state.EntityManager.Instantiate(entitiesReferences.RenemyPrefab);
@@ -71,7 +84,9 @@ partial struct EnemySpawningSystem : ISystem
 
                 
                 enemySpawner.ValueRW.swap = false;
-            }
+            }*/
+
+
         }
     }
 }
