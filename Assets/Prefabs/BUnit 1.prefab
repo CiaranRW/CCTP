@@ -130,7 +130,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8700497760308743419, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: moveSpeed
-      value: 0.5
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700497760308743419, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
+      propertyPath: rotationSpeed
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8793089616949493306, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -228,7 +232,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5819684605672807038}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 108577cbdbe6e5241baea511ab4dcc9e, type: 3}
   m_Name: 
@@ -251,7 +255,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5819684605672807038}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69103f99814374e4180b6c74caca9139, type: 3}
   m_Name: 
