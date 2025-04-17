@@ -20,7 +20,8 @@ partial struct HealthDeadTextSystem : ISystem
             if (health.ValueRO.healthAmount <= 0)
             {
                 //dead
-                entityCommandBuffer.DestroyEntity(entity);
+                //entityCommandBuffer.DestroyEntity(entity);
+                entityCommandBuffer.AddComponent<DeadTag>(entity);
             }
         }
 

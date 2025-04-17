@@ -40,5 +40,6 @@ public class EnemySpawnerAuthoring : MonoBehaviour
 public struct EnemySpawnerComponent : IComponentData
 {
     public float spawnCooldown;
+    public bool isSpawning;
 }
 

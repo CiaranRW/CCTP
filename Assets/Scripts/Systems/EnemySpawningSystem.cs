@@ -42,7 +42,7 @@ partial struct EnemySpawningSystem : ISystem
                 float3 randomPosition = new float3(
                 random.NextFloat(-15f, 15f),
                 0f,
-                random.NextFloat(-15f, 15f)
+                random.NextFloat(-10f, 10f)
 );
                 SystemAPI.SetComponent(enemySpawner.ValueRW.spawnedEntity, LocalTransform.FromPosition(randomPosition));
             }

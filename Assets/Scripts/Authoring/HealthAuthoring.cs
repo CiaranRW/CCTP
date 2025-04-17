@@ -22,3 +22,8 @@ public struct Health : IComponentData
 {
     public int healthAmount;
 }
+
+public struct DeadTag : IComponentData
+{
+    // No data yet
+}

@@ -26,9 +26,13 @@ public partial class EnemySpawnerSystem : SystemBase
         }
 
         enemySpawnerComponent = EntityManager.GetComponentData<EnemySpawnerComponent>(enemySpawnerEntity);
-        enemyDataContainerComponent = EntityManager.GetComponentObject<EnemyDataContainer>(enemySpawnerEntity);
 
-        Debug.Log("Current spawnCooldown: " + enemySpawnerComponent.spawnCooldown);
+        if (!enemySpawnerComponent.isSpawning)
+        {
+            return;
+        }
+
+        enemyDataContainerComponent = EntityManager.GetComponentObject<EnemyDataContainer>(enemySpawnerEntity);
 
         if (SystemAPI.Time.ElapsedTime > nextSpawnTime)
         {
@@ -37,7 +41,6 @@ public partial class EnemySpawnerSystem : SystemBase
         }
     }
 
-    // Function that spawns an enemy
     private void SpawnEnemy()
     {
         int level = 2;
@@ -51,26 +54,55 @@ public partial class EnemySpawnerSystem : SystemBase
             }
         }
 
- 
+
         if (availableEnemies.Count == 0)
         {
             return;
         }
 
         int index = random.NextInt(availableEnemies.Count);
-
         Entity selectedEnemyPrefab = availableEnemies[index].prefab;
-        Entity newEnemy = EntityManager.Instantiate(selectedEnemyPrefab);
 
-        EntityManager.SetComponentData(newEnemy, new LocalTransform
+        EntityQuery deadEntitiesQuery = SystemAPI.QueryBuilder()
+                    .WithAll<DeadTag, Health, LocalTransform>()
+                    .Build();
+
+        Entity recycledEntity = Entity.Null;
+
+        // Check if there are any available dead entities to reuse
+        if (!deadEntitiesQuery.IsEmpty)
+        {
+            recycledEntity = deadEntitiesQuery.GetSingletonEntity();
+        }
+
+        if (recycledEntity != Entity.Null)
+        {
+            ResetRecycledEntity(recycledEntity);
+            return; // Recycled, no need to instantiate a new one
+        }
+
+        // No recycled entity found, instantiate a new one
+        Entity newEnemy = EntityManager.Instantiate(selectedEnemyPrefab);
+        ResetRecycledEntity(newEnemy); // Reset components for new or recycled entity
+    }
+
+    private void ResetRecycledEntity(Entity entity)
+    {
+        // Reset health and position (the components you want to reset)
+        EntityManager.SetComponentData(entity, new Health { healthAmount = 100 });
+        EntityManager.SetComponentData(entity, new LocalTransform
         {
             Position = GetPositionOutsideOfCameraRange(),
             Rotation = quaternion.identity,
             Scale = 1
         });
 
-        nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + enemySpawnerComponent.spawnCooldown;
+        // Remove the DeadTag to make it ready for future spawning
+        EntityManager.RemoveComponent<DeadTag>(entity);
     }
+
+
+
 
     private float3 GetPositionOutsideOfCameraRange()
     {
