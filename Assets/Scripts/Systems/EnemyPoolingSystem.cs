@@ -1,38 +1,55 @@
+using Unity.Collections;
 using Unity.Entities;
-using Unity.Transforms;
 using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Transforms;
 
-partial class EnemyPoolingSystem : SystemBase
+public partial class EnemyPoolingSystem : SystemBase
 {
-    private EntityQuery deadEntitiesQuery;
-
-    protected override void OnCreate()
-    {
-        // Query to fetch all entities with DeadTag, Health and LocalTransform
-        deadEntitiesQuery = GetEntityQuery(
-            ComponentType.ReadOnly<DeadTag>(),
-            ComponentType.ReadWrite<Health>(),
-            ComponentType.ReadWrite<LocalTransform>()
-        );
-    }
-
     protected override void OnUpdate()
     {
-        // Directly access entities marked as dead
-        Entities
-            .WithStoreEntityQueryInField(ref deadEntitiesQuery)
-            .ForEach((Entity entity, ref Health health, ref LocalTransform transform) =>
-            {
-                if (health.healthAmount <= 0)
-                {
-                    // Recycle the entity by resetting health and transform
-                    health.healthAmount = 100;
-                    transform.Position = new float3(0, 0, 0); // Reset position
-                    transform.Rotation = quaternion.identity; // Reset rotation
-                    transform.Scale = 1; // Reset scale
+        // First, collect entities to process in a list
+        var entitiesToDisable = new NativeList<Entity>(Allocator.Temp);
 
-                    // Leave the DeadTag so the respawn system can reuse this entity
-                }
-            }).Run(); // Execute immediately on the main thread
+        foreach (var (health, transform, entity) in
+            SystemAPI.Query<RefRO<Health>, RefRO<LocalTransform>>()
+                     .WithAll<DeadTag>()
+                     .WithEntityAccess())
+        {
+            entitiesToDisable.Add(entity);
+        }
+
+        // Now safely modify the entities outside the query loop
+        foreach (var entity in entitiesToDisable)
+        {
+            DisableComponents(entity);
+        }
+
+        entitiesToDisable.Dispose();
+    }
+
+    // This method will be used to disable components on pooled entities
+    private void DisableComponents(Entity entity)
+    {
+        // Disable movement
+        if (EntityManager.HasComponent<UnitMover>(entity))
+        {
+            var mover = EntityManager.GetComponentData<UnitMover>(entity);
+            mover.moveSpeed = 0f; // Actually stop it
+            EntityManager.SetComponentData(entity, mover);
+        }
+
+        // Remove team affiliation
+        if (EntityManager.HasComponent<Blue>(entity))
+        {
+            EntityManager.RemoveComponent<Blue>(entity);
+        }
+
+        EntityManager.SetComponentData(entity, new LocalTransform
+        {
+            Position = new float3(0, -1000, 0), // Move far below map
+            Rotation = quaternion.identity,
+            Scale = 1
+        });
     }
 }

@@ -4,6 +4,8 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using Random = Unity.Mathematics.Random;
 using System.Collections.Generic;
+using Unity.Physics;
+using Unity.Collections;
 
 public partial class EnemySpawnerSystem : SystemBase
 {
@@ -54,7 +56,6 @@ public partial class EnemySpawnerSystem : SystemBase
             }
         }
 
-
         if (availableEnemies.Count == 0)
         {
             return;
@@ -63,32 +64,37 @@ public partial class EnemySpawnerSystem : SystemBase
         int index = random.NextInt(availableEnemies.Count);
         Entity selectedEnemyPrefab = availableEnemies[index].prefab;
 
+        // Query for dead entities
         EntityQuery deadEntitiesQuery = SystemAPI.QueryBuilder()
                     .WithAll<DeadTag, Health, LocalTransform>()
                     .Build();
 
         Entity recycledEntity = Entity.Null;
 
-        // Check if there are any available dead entities to reuse
         if (!deadEntitiesQuery.IsEmpty)
         {
-            recycledEntity = deadEntitiesQuery.GetSingletonEntity();
+            var deadEntities = deadEntitiesQuery.ToEntityArray(Allocator.TempJob);
+
+            if (deadEntities.Length > 0)
+            {
+                recycledEntity = deadEntities[0];
+            }
+
+            deadEntities.Dispose();
         }
 
         if (recycledEntity != Entity.Null)
         {
             ResetRecycledEntity(recycledEntity);
-            return; // Recycled, no need to instantiate a new one
+            return;
         }
 
-        // No recycled entity found, instantiate a new one
         Entity newEnemy = EntityManager.Instantiate(selectedEnemyPrefab);
-        ResetRecycledEntity(newEnemy); // Reset components for new or recycled entity
+        ResetRecycledEntity(newEnemy);
     }
 
     private void ResetRecycledEntity(Entity entity)
     {
-        // Reset health and position (the components you want to reset)
         EntityManager.SetComponentData(entity, new Health { healthAmount = 100 });
         EntityManager.SetComponentData(entity, new LocalTransform
         {
@@ -97,12 +103,20 @@ public partial class EnemySpawnerSystem : SystemBase
             Scale = 1
         });
 
-        // Remove the DeadTag to make it ready for future spawning
+        if (EntityManager.HasComponent<UnitMover>(entity))
+        {
+            var unitMover = EntityManager.GetComponentData<UnitMover>(entity);
+            unitMover.moveSpeed = 1f;
+            EntityManager.SetComponentData(entity, unitMover);
+        }
+
+        if (!EntityManager.HasComponent<Blue>(entity))
+        {
+            EntityManager.AddComponent<Blue>(entity);
+        }
+
         EntityManager.RemoveComponent<DeadTag>(entity);
     }
-
-
-
 
     private float3 GetPositionOutsideOfCameraRange()
     {
