@@ -9,42 +9,47 @@ partial struct UnitMoverSystem : ISystem
 {
     public const float REACHED_TARGET_POSITION_DISTANCE_SQ = 2f;
     public const float SEPARATION_RADIUS = 3f;
-    public const float SEPARATION_FORCE_MULTIPLIER = 2f;
+    public const float SEPARATION_FORCE_MULTIPLIER = 2f; // Your constants for movement
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        NativeList<float3> entityPositions = new NativeList<float3>(Allocator.TempJob);
+        var spatialMap = new NativeParallelMultiHashMap<int, float3>(1024, Allocator.TempJob);
 
         foreach (var localTransform in SystemAPI.Query<LocalTransform>())
         {
-            entityPositions.Add(localTransform.Position);
+            float3 position = localTransform.Position;
+            int2 cell = GridUtils.WorldToGrid(position);
+            uint hash = GridUtils.HashCell(cell);
+
+            spatialMap.Add((int)hash, position); 
         }
 
-        UnitMoverJob unitMoverJob = new UnitMoverJob
+        var job = new UnitMoverJob
         {
             deltaTime = SystemAPI.Time.DeltaTime,
-            entityPositions = entityPositions.AsReadOnly()
+            spatialMap = spatialMap.AsReadOnly()
         };
 
-        unitMoverJob.ScheduleParallel();
-        state.Dependency = entityPositions.Dispose(state.Dependency);
+        job.ScheduleParallel(); 
+
+        spatialMap.Dispose(state.Dependency);
     }
 }
-
 
 [BurstCompile]
 public partial struct UnitMoverJob : IJobEntity
 {
     public float deltaTime;
-    [ReadOnly] public NativeArray<float3>.ReadOnly entityPositions;
+
+    [ReadOnly] public NativeParallelMultiHashMap<int, float3>.ReadOnly spatialMap;
 
     public void Execute(ref LocalTransform localTransform, in UnitMover unitMover, ref PhysicsVelocity physicsVelocity)
     {
-        float3 separationForce = CalculateSeparationForce(localTransform.Position);
-
-        float3 moveDirection = unitMover.targetPosition - localTransform.Position;
+        float3 position = localTransform.Position;
+        float3 moveDirection = unitMover.targetPosition - position;
         float reachedTargetDistanceSQ = UnitMoverSystem.REACHED_TARGET_POSITION_DISTANCE_SQ;
+
         if (math.lengthsq(moveDirection) <= reachedTargetDistanceSQ)
         {
             physicsVelocity.Linear = float3.zero;
@@ -52,11 +57,11 @@ public partial struct UnitMoverJob : IJobEntity
             return;
         }
 
-        moveDirection = math.normalize(moveDirection);
-        moveDirection += separationForce;
-        moveDirection = math.normalize(moveDirection);
+        float3 separationForce = CalculateSeparationForce(position);
 
-        localTransform.Rotation = math.slerp(localTransform.Rotation,
+        moveDirection = math.normalize(moveDirection + separationForce);
+        localTransform.Rotation = math.slerp(
+            localTransform.Rotation,
             quaternion.LookRotation(moveDirection, math.up()),
             deltaTime * unitMover.rotationSpeed);
 
@@ -66,22 +71,38 @@ public partial struct UnitMoverJob : IJobEntity
 
     private float3 CalculateSeparationForce(float3 position)
     {
-        float3 separationForce = float3.zero;
-        float separationRadius = UnitMoverSystem.SEPARATION_RADIUS;
+        float3 force = float3.zero;
+        float radiusSq = UnitMoverSystem.SEPARATION_RADIUS * UnitMoverSystem.SEPARATION_RADIUS;
 
-        foreach (float3 otherPosition in entityPositions)
+        int2 cell = GridUtils.WorldToGrid(position);
+        uint hash = GridUtils.HashCell(cell); 
+
+        for (int x = -1; x <= 1; x++)
         {
-            if (math.distance(position, otherPosition) == 0f) continue;
-
-            float3 direction = position - otherPosition;
-            float distance = math.length(direction);
-
-            if (distance < separationRadius)
+            for (int y = -1; y <= 1; y++)
             {
-                separationForce += math.normalize(direction) / distance;
+                int2 neighborCell = cell + new int2(x, y);
+                uint neighborHash = GridUtils.HashCell(neighborCell);
+
+                if (spatialMap.TryGetFirstValue((int)neighborHash, out var otherPosition, out var iterator))
+                {
+                    do
+                    {
+                        if (math.all(otherPosition == position)) continue;
+
+                        float distSq = math.distancesq(position, otherPosition);
+                        if (distSq < radiusSq)
+                        {
+                            // Apply separation force
+                            float3 direction = position - otherPosition;
+                            force += math.normalize(direction) / math.sqrt(distSq);
+                        }
+                    }
+                    while (spatialMap.TryGetNextValue(out otherPosition, ref iterator));
+                }
             }
         }
 
-        return separationForce * UnitMoverSystem.SEPARATION_FORCE_MULTIPLIER;
+        return force * UnitMoverSystem.SEPARATION_FORCE_MULTIPLIER;
     }
 }
