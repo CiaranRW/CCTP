@@ -14,11 +14,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6149300703239878517, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6149300703239878517, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: damageAmount
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4360610186292236635, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Enabled

@@ -106,7 +106,7 @@ public partial class EnemySpawnerSystem : SystemBase
         if (EntityManager.HasComponent<UnitMover>(entity))
         {
             var unitMover = EntityManager.GetComponentData<UnitMover>(entity);
-            unitMover.moveSpeed = 1f;
+            unitMover.moveSpeed = 0.5f;
             EntityManager.SetComponentData(entity, unitMover);
         }
 
