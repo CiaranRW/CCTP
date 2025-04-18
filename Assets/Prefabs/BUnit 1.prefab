@@ -28,6 +28,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 26063722811359638, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1947586847355545825, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Name
       value: BUnit 1
@@ -150,7 +154,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8700497760308743419, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: moveSpeed
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8700497760308743419, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: rotationSpeed
@@ -221,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519949136f6dbf44e848982b0efcc2cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 100
+  range: 1000
   targetFaction: 0
   timerMax: 1
 --- !u!114 &-6666745540424826028
@@ -262,9 +266,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69103f99814374e4180b6c74caca9139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 0.1
+  range: 1
   teamFaction: 1
-  timerMax: 100
+  timerMax: 1
 --- !u!114 &1110861690608774608
 MonoBehaviour:
   m_ObjectHideFlags: 0

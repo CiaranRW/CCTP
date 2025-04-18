@@ -6,6 +6,7 @@ using Random = Unity.Mathematics.Random;
 using System.Collections.Generic;
 using Unity.Physics;
 using Unity.Collections;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public partial class EnemySpawnerSystem : SystemBase
 {
@@ -106,7 +107,7 @@ public partial class EnemySpawnerSystem : SystemBase
         if (EntityManager.HasComponent<UnitMover>(entity))
         {
             var unitMover = EntityManager.GetComponentData<UnitMover>(entity);
-            unitMover.moveSpeed = 0.5f;
+            unitMover.moveSpeed = 0.2f;
             EntityManager.SetComponentData(entity, unitMover);
         }
 

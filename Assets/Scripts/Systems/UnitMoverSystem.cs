@@ -7,9 +7,9 @@ using Unity.Transforms;
 
 partial struct UnitMoverSystem : ISystem
 {
-    public const float REACHED_TARGET_POSITION_DISTANCE_SQ = 1f;
-    public const float SEPARATION_RADIUS = 1f;
-    public const float SEPARATION_FORCE_MULTIPLIER = 1.5f;
+    public const float REACHED_TARGET_POSITION_DISTANCE_SQ = 2f;
+    public const float SEPARATION_RADIUS = 2f;
+    public const float SEPARATION_FORCE_MULTIPLIER = 2f;
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
