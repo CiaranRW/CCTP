@@ -1,93 +1,89 @@
 using Unity.Burst;
+using UnityEngine;
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.Transforms;
+using Unity.Mathematics;
+using Random = Unity.Mathematics.Random;
+using Unity.Physics;
 
 partial struct EnemySpawningSystem : ISystem
 {
+    private Random random;
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        
         EntitiesReferences entitiesReferences = SystemAPI.GetSingleton<EntitiesReferences>();
 
         EntityCommandBuffer entityCommandBuffer =
             SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
         uint seed = (uint)(SystemAPI.Time.ElapsedTime * 1000) + 1;
-        Random random = new Random(seed);
+        Random random = new Random(seed); // Create random here
 
         foreach ((
             RefRO<LocalTransform> localTransform,
-            RefRW<EnemySpawner > enemySpawner)
+            RefRW<EnemySpawner> enemySpawner)
             in SystemAPI.Query<
                 RefRO<LocalTransform>,
                 RefRW<EnemySpawner>>())
         {
             enemySpawner.ValueRW.timer -= SystemAPI.Time.DeltaTime;
             if (enemySpawner.ValueRO.timer > 0f)
-            {
                 continue;
-            }
+
             enemySpawner.ValueRW.timer = enemySpawner.ValueRO.timerMax;
+
+            float3 newPosition = GetPositionOutsideOfCameraRange(ref state, ref random);
 
             if (enemySpawner.ValueRO.spawnedEntity == Entity.Null)
             {
                 Entity entity = state.EntityManager.Instantiate(entitiesReferences.player);
                 enemySpawner.ValueRW.spawnedEntity = entity;
-                SystemAPI.SetComponent(entity, LocalTransform.FromPosition(0, 0, 0));
+                SystemAPI.SetComponent(entity, LocalTransform.FromPosition(newPosition));
             }
             else
             {
-                float3 randomPosition = new float3(
-                random.NextFloat(-15f, 15f),
-                0f,
-                random.NextFloat(-10f, 10f)
-);
-                SystemAPI.SetComponent(enemySpawner.ValueRW.spawnedEntity, LocalTransform.FromPosition(randomPosition));
+                SystemAPI.SetComponent(enemySpawner.ValueRW.spawnedEntity, new LocalTransform
+                {
+                    Position = newPosition,
+                    Rotation = quaternion.identity,
+                    Scale = 1
+                });
             }
-
-
-/*            if (enemySpawner.ValueRO.swap == false)
-            {
-                Entity BenemyEntity = state.EntityManager.Instantiate(entitiesReferences.BenemyPrefab);
-                SystemAPI.SetComponent(BenemyEntity, LocalTransform.FromPosition(localTransform.ValueRO.Position));
-                //SystemAPI.SetComponent(BenemyEntity, LocalTransform.FromPosition(-10, 0, 0));
-
-                entityCommandBuffer.AddComponent(BenemyEntity, new RandomWalking
-                {
-                    originalPosiiton = localTransform.ValueRO.Position,
-                    targetPosition = localTransform.ValueRO.Position,
-                    distanceMin = enemySpawner.ValueRO.randomWalkingDistanceMin,
-                    distanceMax = enemySpawner.ValueRO.randomWalkingDistanceMax,
-                    random = new Random((uint)BenemyEntity.Index),
-                });
-
-                enemySpawner.ValueRW.swap = true;
-            }*/
-/*            else if (enemySpawner.ValueRO.swap == true)
-            {
-
-                Entity RenemyEntity = state.EntityManager.Instantiate(entitiesReferences.RenemyPrefab);
-                SystemAPI.SetComponent(RenemyEntity, LocalTransform.FromPosition(localTransform.ValueRO.Position));
-                //SystemAPI.SetComponent(RenemyEntity, LocalTransform.FromPosition(10,0,0));
-
-
-                entityCommandBuffer.AddComponent(RenemyEntity, new RandomWalking
-                {
-                    originalPosiiton = localTransform.ValueRO.Position,
-                    targetPosition = localTransform.ValueRO.Position,
-                    distanceMin = enemySpawner.ValueRO.randomWalkingDistanceMin,
-                    distanceMax = enemySpawner.ValueRO.randomWalkingDistanceMax,
-                    random = new Random((uint)RenemyEntity.Index),
-                });
-
-                
-                enemySpawner.ValueRW.swap = false;
-            }*/
-
-
         }
+    }
+    private float3 GetPositionOutsideOfCameraRange(ref SystemState state, ref Random random)
+    {
+        float3 position = random.NextFloat3(new float3(-15, 0, -15), new float3(15, 0, 15));
+
+        if (!SystemAPI.HasSingleton<PhysicsWorldSingleton>())
+            return position; // fallback if physics not ready
+
+        var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
+
+        var rayInput = new RaycastInput
+        {
+            Start = position + new float3(0, 50, 0),
+            End = position + new float3(0, -50, 0),
+            Filter = new CollisionFilter
+            {
+                BelongsTo = ~0u,
+                CollidesWith = ~0u,
+                GroupIndex = 0
+            }
+        };
+
+        if (collisionWorld.CastRay(rayInput, out var hit))
+        {
+            position.y = hit.Position.y;
+        }
+        else
+        {
+            position.y = 0;
+        }
+
+        return position;
     }
 }
 

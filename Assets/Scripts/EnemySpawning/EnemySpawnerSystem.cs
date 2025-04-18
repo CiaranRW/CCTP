@@ -6,7 +6,7 @@ using Random = Unity.Mathematics.Random;
 using System.Collections.Generic;
 using Unity.Physics;
 using Unity.Collections;
-using static UnityEngine.EventSystems.EventTrigger;
+using Unity.Burst;
 
 public partial class EnemySpawnerSystem : SystemBase
 {
@@ -20,7 +20,7 @@ public partial class EnemySpawnerSystem : SystemBase
     {
         random = Random.CreateFromIndex(1);
     }
-
+    [BurstCompile]
     protected override void OnUpdate()
     {
         if (!SystemAPI.TryGetSingletonEntity<EnemySpawnerComponent>(out enemySpawnerEntity))
@@ -43,7 +43,7 @@ public partial class EnemySpawnerSystem : SystemBase
             nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + enemySpawnerComponent.spawnCooldown;
         }
     }
-
+    [BurstCompile]
     private void SpawnEnemy()
     {
         int level = 2;
@@ -93,7 +93,7 @@ public partial class EnemySpawnerSystem : SystemBase
         Entity newEnemy = EntityManager.Instantiate(selectedEnemyPrefab);
         ResetRecycledEntity(newEnemy);
     }
-
+    [BurstCompile]
     private void ResetRecycledEntity(Entity entity)
     {
         EntityManager.SetComponentData(entity, new Health { healthAmount = 100 });
@@ -118,11 +118,36 @@ public partial class EnemySpawnerSystem : SystemBase
 
         EntityManager.RemoveComponent<DeadTag>(entity);
     }
-
+    [BurstCompile]
     private float3 GetPositionOutsideOfCameraRange()
     {
-        float3 position = new float3(random.NextFloat3(-15, 15));
-        position.y = 0;
+        float3 position = random.NextFloat3(new float3(-15, 0, -15), new float3(15, 0, 15));
+
+        if (!SystemAPI.HasSingleton<PhysicsWorldSingleton>())
+            return position; // fallback if physics not ready
+
+        var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
+
+        var rayInput = new RaycastInput
+        {
+            Start = position + new float3(0, 50, 0),
+            End = position + new float3(0, -50, 0),
+            Filter = new CollisionFilter
+            {
+                BelongsTo = ~0u,
+                CollidesWith = ~0u,
+                GroupIndex = 0
+            }
+        };
+
+        if (collisionWorld.CastRay(rayInput, out var hit))
+        {
+            position.y = hit.Position.y;
+        }
+        else
+        {
+            position.y = 0; // fallback if no ground found
+        }
 
         return position;
     }
