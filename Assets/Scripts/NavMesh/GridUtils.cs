@@ -2,7 +2,7 @@ using Unity.Mathematics;
 
 public static class GridUtils
 {
-    public const float CELL_SIZE = 10f; // Size of each grid cell
+    public const float CELL_SIZE = 5f; // Size of each grid cell
 
     public static int2 WorldToGrid(float3 position)
     {

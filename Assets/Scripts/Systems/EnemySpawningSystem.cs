@@ -8,8 +8,6 @@ using Unity.Physics;
 
 partial struct EnemySpawningSystem : ISystem
 {
-    private Random random;
-
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
@@ -34,28 +32,23 @@ partial struct EnemySpawningSystem : ISystem
 
             enemySpawner.ValueRW.timer = enemySpawner.ValueRO.timerMax;
 
-            float3 newPosition = GetPositionOutsideOfCameraRange(ref state, ref random);
+            for (int i = 0; i < 5; i++)
+            {
+                float3 spawnPosition = GetPositionOutsideOfCameraRange(ref state, ref random);
 
-            if (enemySpawner.ValueRO.spawnedEntity == Entity.Null)
-            {
                 Entity entity = state.EntityManager.Instantiate(entitiesReferences.player);
-                enemySpawner.ValueRW.spawnedEntity = entity;
-                SystemAPI.SetComponent(entity, LocalTransform.FromPosition(newPosition));
-            }
-            else
-            {
-                SystemAPI.SetComponent(enemySpawner.ValueRW.spawnedEntity, new LocalTransform
+                SystemAPI.SetComponent(entity, new LocalTransform
                 {
-                    Position = newPosition,
+                    Position = spawnPosition,
                     Rotation = quaternion.identity,
-                    Scale = 1
+                    Scale = 1f
                 });
             }
         }
     }
     private float3 GetPositionOutsideOfCameraRange(ref SystemState state, ref Random random)
     {
-        float3 position = random.NextFloat3(new float3(-15, 0, -15), new float3(15, 0, 15));
+        float3 position = random.NextFloat3(new float3(-50, 0, -50), new float3(50, 0, 50));
 
         if (!SystemAPI.HasSingleton<PhysicsWorldSingleton>())
             return position; // fallback if physics not ready
@@ -76,7 +69,7 @@ partial struct EnemySpawningSystem : ISystem
 
         if (collisionWorld.CastRay(rayInput, out var hit))
         {
-            position.y = hit.Position.y;
+            position.y = hit.Position.y + 0.2f;
         }
         else
         {

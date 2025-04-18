@@ -107,7 +107,7 @@ public partial class EnemySpawnerSystem : SystemBase
         if (EntityManager.HasComponent<UnitMover>(entity))
         {
             var unitMover = EntityManager.GetComponentData<UnitMover>(entity);
-            unitMover.moveSpeed = 0.2f;
+            unitMover.moveSpeed = 0.5f;
             EntityManager.SetComponentData(entity, unitMover);
         }
 
@@ -116,12 +116,19 @@ public partial class EnemySpawnerSystem : SystemBase
             EntityManager.AddComponent<Blue>(entity);
         }
 
+        EntitiesReferences references = SystemAPI.GetSingleton<EntitiesReferences>();
+
+        Entity prefab = references.BenemyPrefab;
+        PhysicsCollider originalCollider = EntityManager.GetComponentData<PhysicsCollider>(prefab);
+
+        EntityManager.SetComponentData(entity, originalCollider);
+
         EntityManager.RemoveComponent<DeadTag>(entity);
     }
     [BurstCompile]
     private float3 GetPositionOutsideOfCameraRange()
     {
-        float3 position = random.NextFloat3(new float3(-15, 0, -15), new float3(15, 0, 15));
+        float3 position = random.NextFloat3(new float3(-50, 0, -50), new float3(50, 0, 50));
 
         if (!SystemAPI.HasSingleton<PhysicsWorldSingleton>())
             return position; // fallback if physics not ready
@@ -130,8 +137,8 @@ public partial class EnemySpawnerSystem : SystemBase
 
         var rayInput = new RaycastInput
         {
-            Start = position + new float3(0, 50, 0),
-            End = position + new float3(0, -50, 0),
+            Start = position + new float3(0, 50f, 0),
+            End = position + new float3(0, -50f, 0),
             Filter = new CollisionFilter
             {
                 BelongsTo = ~0u,
@@ -142,7 +149,7 @@ public partial class EnemySpawnerSystem : SystemBase
 
         if (collisionWorld.CastRay(rayInput, out var hit))
         {
-            position.y = hit.Position.y;
+            position.y = hit.Position.y + 0.5f; // Push it slightly above ground
         }
         else
         {

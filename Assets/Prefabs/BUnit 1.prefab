@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6149300703239878517, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: timerMax
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -6149300703239878517, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Enabled
@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6149300703239878517, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: damageAmount
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -4360610186292236635, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Enabled
@@ -126,11 +126,11 @@ PrefabInstance:
       objectReference: {fileID: 4493585093827132993, guid: 482d90674a7ceab4698f3122e2092f6c, type: 3}
     - target: {fileID: 6645594117178008577, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Height
-      value: 0.56
+      value: 0.62
       objectReference: {fileID: 0}
     - target: {fileID: 6645594117178008577, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Radius
-      value: 0.09
+      value: 0.19
       objectReference: {fileID: 0}
     - target: {fileID: 6645594117178008577, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Enabled
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519949136f6dbf44e848982b0efcc2cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 1000
+  range: 5
   targetFaction: 0
   timerMax: 1
 --- !u!114 &-6666745540424826028

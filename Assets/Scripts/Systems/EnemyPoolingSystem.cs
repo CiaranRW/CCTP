@@ -47,9 +47,11 @@ public partial class EnemyPoolingSystem : SystemBase
 
         EntityManager.SetComponentData(entity, new LocalTransform
         {
-            Position = new float3(0, -1000, 0), // Move far below map
+            Position = new float3(0, -100, 0),
             Rotation = quaternion.identity,
             Scale = 1
         });
+
+        EntityManager.SetComponentData(entity, new PhysicsCollider { Value = default });
     }
 }
