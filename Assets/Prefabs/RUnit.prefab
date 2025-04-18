@@ -24,6 +24,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 26063722811359638, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 26063722811359638, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
+      propertyPath: m_Constraints
+      value: 126
+      objectReference: {fileID: 0}
     - target: {fileID: 1947586847355545825, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Name
       value: RUnit

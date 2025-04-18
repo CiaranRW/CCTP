@@ -60,7 +60,7 @@ partial struct MeleeAttackSystem : ISystem
             if (!targetFound)
             {
                 // Optional: move to random nearby position or stay idle
-                unitMover.ValueRW.targetPosition = localTransform.ValueRO.Position;
+                //unitMover.ValueRW.targetPosition = localTransform.ValueRO.Position;
             }
         }
     }
