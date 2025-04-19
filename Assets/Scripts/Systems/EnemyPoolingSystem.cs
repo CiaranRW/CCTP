@@ -19,7 +19,6 @@ public partial class EnemyPoolingSystem : SystemBase
             entitiesToDisable.Add(entity);
         }
 
-        // Now safely modify the entities outside the query loop
         foreach (var entity in entitiesToDisable)
         {
             DisableComponents(entity);
@@ -28,7 +27,6 @@ public partial class EnemyPoolingSystem : SystemBase
         entitiesToDisable.Dispose();
     }
 
-    // This method will be used to disable components on pooled entities
     private void DisableComponents(Entity entity)
     {
         // Disable movement
@@ -47,9 +45,11 @@ public partial class EnemyPoolingSystem : SystemBase
 
         EntityManager.SetComponentData(entity, new LocalTransform
         {
-            Position = new float3(0, -1000, 0), // Move far below map
+            Position = new float3(0, -100, 0),
             Rotation = quaternion.identity,
             Scale = 1
         });
+
+        EntityManager.SetComponentData(entity, new PhysicsCollider { Value = default });
     }
 }

@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6149300703239878517, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: timerMax
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -6149300703239878517, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Enabled
@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6149300703239878517, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: damageAmount
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -4360610186292236635, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Enabled
@@ -130,7 +130,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6645594117178008577, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Radius
-      value: 0.12
+      value: 0.19
       objectReference: {fileID: 0}
     - target: {fileID: 6645594117178008577, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Enabled
@@ -147,14 +147,6 @@ PrefabInstance:
     - target: {fileID: 8700497760308743419, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Enabled
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8700497760308743419, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
-      propertyPath: moveSpeed
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8700497760308743419, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
-      propertyPath: rotationSpeed
-      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8793089616949493306, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Materials.Array.size
@@ -221,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519949136f6dbf44e848982b0efcc2cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 100
+  range: 5
   targetFaction: 0
   timerMax: 1
 --- !u!114 &-6666745540424826028
@@ -262,9 +254,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69103f99814374e4180b6c74caca9139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 0.1
+  range: 1
   teamFaction: 1
-  timerMax: 100
+  timerMax: 1
 --- !u!114 &1110861690608774608
 MonoBehaviour:
   m_ObjectHideFlags: 0

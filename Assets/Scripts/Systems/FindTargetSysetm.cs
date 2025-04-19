@@ -19,8 +19,8 @@ partial struct FindTargetSysetm : ISystem
             RefRO<LocalTransform> localTransform,
             RefRW<FindTarget> findTarget,
             RefRW<Target> target,
-            RefRW<FindTeam> findTeam
-            
+            RefRW<FindTeam> findTeam,
+            RefRW < UnitMover > unitMover
             ,RefRW<NavAgentComponent> navAgent
             ) 
 
@@ -28,8 +28,8 @@ partial struct FindTargetSysetm : ISystem
                 RefRO<LocalTransform>,
                 RefRW<FindTarget>,
                 RefRW<Target>,
-                RefRW<FindTeam>
-
+                RefRW<FindTeam>,
+                RefRW<UnitMover>
                 ,RefRW<NavAgentComponent>
                 >())
         {
@@ -59,6 +59,11 @@ partial struct FindTargetSysetm : ISystem
                     {
                         target.ValueRW.targetEntity = distanceHit.Entity;
                         navAgent.ValueRW.targetEntity = distanceHit.Entity;
+
+                        // Get the target's position and set it in UnitMover
+                        LocalTransform targetTransform = SystemAPI.GetComponent<LocalTransform>(distanceHit.Entity);
+                        unitMover.ValueRW.targetPosition = targetTransform.Position;
+
                         break;
                     }
                 }
