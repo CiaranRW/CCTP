@@ -7,6 +7,7 @@ public class PoolSizeSelector : MonoBehaviour
     public TMP_InputField inputField;
     private Entity poolSizeEntity;
 
+
     void Start()
     {
         inputField.onValueChanged.AddListener(OnValueChanged);
@@ -16,6 +17,8 @@ public class PoolSizeSelector : MonoBehaviour
 
         poolSizeEntity = entityManager.CreateEntity(typeof(EnemyPoolSize));
         entityManager.SetComponentData(poolSizeEntity, new EnemyPoolSize { Value = 500 }); // default value
+
+
     }
 
     void OnValueChanged(string value)
@@ -30,8 +33,16 @@ public class PoolSizeSelector : MonoBehaviour
             Debug.Log("Invalid pool size.");
         }
     }
+
+    public void UpdatePool()
+    {
+        var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        var loadingReadyEntity = entityManager.CreateEntity(typeof(LoadingCompleteTag));
+    }
 }
 public struct EnemyPoolSize : IComponentData
 {
     public int Value;
 }
+
+public struct LoadingCompleteTag : IComponentData { }

@@ -6,7 +6,9 @@ public partial class EnemyPoolBootstrapSystem : SystemBase
 {
     protected override void OnUpdate()
     {
-        // Only run if the init tag doesn't exist
+        if (!SystemAPI.HasSingleton<LoadingCompleteTag>()) // <- waits for signal
+            return;
+
         if (SystemAPI.HasSingleton<EnemyPoolInitializedTag>())
             return;
 
