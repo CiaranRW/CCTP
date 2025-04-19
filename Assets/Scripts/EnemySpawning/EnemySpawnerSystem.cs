@@ -8,6 +8,7 @@ using Unity.Physics;
 using Unity.Collections;
 using Unity.Burst;
 
+[BurstCompile]
 public partial class EnemySpawnerSystem : SystemBase
 {
     private Entity enemySpawnerEntity;
@@ -125,7 +126,7 @@ public partial class EnemySpawnerSystem : SystemBase
 
         EntityManager.RemoveComponent<DeadTag>(entity);
     }
-    [BurstCompile]
+
     private float3 GetPositionOutsideOfCameraRange()
     {
         float3 position = random.NextFloat3(new float3(-50, 0, -50), new float3(50, 0, 50));

@@ -1,14 +1,9 @@
 using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Transforms;
-using Unity.Physics;
-using Unity.Burst;
-using UnityEngine;
+
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 public partial class EnemyPoolBootstrapSystem : SystemBase
 {
-    private bool hasSpawned = false;
     protected override void OnUpdate()
     {
         // Only run if the init tag doesn't exist
@@ -23,10 +18,16 @@ public partial class EnemyPoolBootstrapSystem : SystemBase
         if (enemyDataContainer.enemies.Count == 0)
             return;
 
+
+        if (!SystemAPI.HasSingleton<EnemyPoolSize>())
+            return;
+
+
         var prefab = enemyDataContainer.enemies[0].prefab;
 
+        var poolSize = SystemAPI.GetSingleton<EnemyPoolSize>().Value;
 
-        for (int i = 0; i < 1000; i++)
+        for (int i = 0; i < poolSize; i++)
         {
             Entity entity = EntityManager.Instantiate(prefab);
 
