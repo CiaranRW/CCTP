@@ -50,23 +50,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2502655377987359698, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2502655377987359698, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2502655377987359698, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2502655377987359698, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2502655377987359698, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2502655377987359698, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 4903114321702781210, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_LocalScale.x
@@ -148,6 +152,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8700497760308743419, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
+      propertyPath: moveSpeed
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8793089616949493306, guid: 46ed1edf2b4c9f04ba46be91cd27e12e, type: 3}
       propertyPath: m_Materials.Array.size
       value: 2
@@ -213,9 +221,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519949136f6dbf44e848982b0efcc2cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 5
+  range: 50
   targetFaction: 0
-  timerMax: 1
+  timerMax: 10
 --- !u!114 &-6666745540424826028
 MonoBehaviour:
   m_ObjectHideFlags: 0

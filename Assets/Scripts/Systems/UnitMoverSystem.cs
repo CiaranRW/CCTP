@@ -60,11 +60,11 @@ public partial struct UnitMoverJob : IJobEntity
         float3 targetPosition = unitMover.targetPosition;
 
         float3 separationForce = CalculateSeparationForce(entity, position, targetPosition);
-        //Debug.DrawRay(position, separationForce * 3f, Color.red, 0.1f, false);
+        Debug.DrawRay(position, separationForce * 3f, Color.red, 0.1f, false);
         //Debug.DrawRay(position, moveDirection, Color.green, 0.1f, false);
 
         float3 combined = math.normalize(moveDirection + separationForce);
-        //Debug.DrawRay(position, combined * 3f, Color.blue, 0.1f, false);
+        Debug.DrawRay(position, combined * 3f, Color.blue, 0.1f, false);
 
         float3 forward = math.normalize(new float3(combined.x, 0, combined.z));
         if (!math.any(math.isnan(forward)))
@@ -88,7 +88,6 @@ public partial struct UnitMoverJob : IJobEntity
 
         int2 cell = GridUtils.WorldToGrid(position);
 
-        // Smoother separation modifier: more distance = less force
         float separationModifier = math.saturate(targetDistance / 15f);
         separationModifier = 1f - separationModifier;
 

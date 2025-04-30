@@ -15,21 +15,13 @@ partial struct FindTeamSysetm : ISystem
         CollisionWorld collisionWorld = physicsWorldSingleton.CollisionWorld;
         NativeList<DistanceHit> distanceHitList = new NativeList<DistanceHit>(Allocator.Temp);
 
-        foreach ((
-            RefRO<LocalTransform> localTransform,
-            RefRW<Team> team,
-            RefRW<FindTeam> findTeam
-            
-            ,RefRW<NavAgentComponent> navAgent
-            ) 
-
-            in SystemAPI.Query<
+        foreach (var (localTransform, team, findTeam, navAgent) in
+            SystemAPI.Query<
                 RefRO<LocalTransform>,
                 RefRW<Team>,
-                RefRW<FindTeam>
-
-                ,RefRW<NavAgentComponent>
-                >())
+                RefRW<FindTeam>,
+                RefRW<NavAgentComponent>>()
+            .WithNone<DeadTag>())
         {
             findTeam.ValueRW.timer -= SystemAPI.Time.DeltaTime;
 

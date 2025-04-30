@@ -29,15 +29,13 @@ public partial class EnemyPoolingSystem : SystemBase
 
     private void DisableComponents(Entity entity)
     {
-        // Disable movement
         if (EntityManager.HasComponent<UnitMover>(entity))
         {
             var mover = EntityManager.GetComponentData<UnitMover>(entity);
-            mover.moveSpeed = 0f; // Actually stop it
+            mover.moveSpeed = 0f;
             EntityManager.SetComponentData(entity, mover);
         }
 
-        // Remove team affiliation
         if (EntityManager.HasComponent<Blue>(entity))
         {
             EntityManager.RemoveComponent<Blue>(entity);

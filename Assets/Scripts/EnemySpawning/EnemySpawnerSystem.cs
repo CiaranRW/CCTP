@@ -66,7 +66,6 @@ public partial class EnemySpawnerSystem : SystemBase
         int index = random.NextInt(availableEnemies.Count);
         Entity selectedEnemyPrefab = availableEnemies[index].prefab;
 
-        // Query for dead entities
         EntityQuery deadEntitiesQuery = SystemAPI.QueryBuilder()
                     .WithAll<DeadTag, Health, LocalTransform>()
                     .Build();
@@ -117,6 +116,7 @@ public partial class EnemySpawnerSystem : SystemBase
             EntityManager.AddComponent<Blue>(entity);
         }
 
+
         EntitiesReferences references = SystemAPI.GetSingleton<EntitiesReferences>();
 
         Entity prefab = references.BenemyPrefab;
@@ -132,7 +132,7 @@ public partial class EnemySpawnerSystem : SystemBase
         float3 position = random.NextFloat3(new float3(-50, 0, -50), new float3(50, 0, 50));
 
         if (!SystemAPI.HasSingleton<PhysicsWorldSingleton>())
-            return position; // fallback if physics not ready
+            return position;
 
         var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
 
@@ -150,11 +150,11 @@ public partial class EnemySpawnerSystem : SystemBase
 
         if (collisionWorld.CastRay(rayInput, out var hit))
         {
-            position.y = hit.Position.y + 0.5f; // Push it slightly above ground
+            position.y = hit.Position.y + 0.5f; 
         }
         else
         {
-            position.y = 0; // fallback if no ground found
+            position.y = 0;
         }
 
         return position;

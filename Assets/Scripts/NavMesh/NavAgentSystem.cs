@@ -5,22 +5,11 @@ using Unity.Transforms;
 using UnityEngine.Experimental.AI;
 using Unity.Mathematics;
 using Unity.Collections;
-using Unity.Physics;
-using Unity.VisualScripting;
-using System;
-using UnityEngine.AI;
-using System.Runtime.CompilerServices;
 
 [BurstCompile]
 public partial struct NavAgentSystem : ISystem
 {
     [BurstCompile]
-/*    private NavMeshPath path;
-    private void Start()
-    {
-        path = new NavMeshPath();
-
-    }*/
     private void OnUpdate(ref SystemState state)
     {
         foreach (var (navAgent, transform, entity) in SystemAPI.Query<RefRW<NavAgentComponent>, RefRW<LocalTransform>>().WithEntityAccess())
@@ -39,7 +28,6 @@ public partial struct NavAgentSystem : ISystem
                 {
                     navAgent.ValueRW.nextPathCalculateTime += 1;
                     navAgent.ValueRW.pathCalculated = false;
-                    //NavMesh.CalculatePath(transform.ValueRO.Position, state.EntityManager.GetComponentData<LocalTransform>(navAgent.ValueRO.targetEntity).Position, NavMesh.AllAreas, path);
                     CalculatePath(navAgent, transform, waypointBuffer, ref state);
                 }
             }
@@ -65,8 +53,6 @@ public partial struct NavAgentSystem : ISystem
             }
         }
 
-        //var neighbours = GetNeighbours(transform);
-
         float3 direction = waypointBuffer[navAgent.ValueRO.currentWaypoint].wayPoint - transform.ValueRO.Position;
         float angle = math.degrees(math.atan2(direction.z, direction.x));
 
@@ -77,12 +63,6 @@ public partial struct NavAgentSystem : ISystem
 
         transform.ValueRW.Position += math.normalize(direction) * SystemAPI.Time.DeltaTime * navAgent.ValueRO.moveSpeed;
     }
-
-    /*   private UnityEngine.Collider[] GetNeighbours(RefRW<LocalTransform> transform)
-        {
-            var enemyMask = LayerMask.GetMask("Units");
-            return Physics.OverlapSphere(transform.ValueRO.Position, 1f, enemyMask);
-        }*/
 
      [BurstCompile]
      private void CalculatePath(RefRW<NavAgentComponent> navAgent, RefRW<LocalTransform> transform, DynamicBuffer<WaypointBuffer> waypointBuffer,

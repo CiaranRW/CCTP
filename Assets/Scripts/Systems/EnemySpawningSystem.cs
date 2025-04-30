@@ -17,7 +17,7 @@ partial struct EnemySpawningSystem : ISystem
             SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
         uint seed = (uint)(SystemAPI.Time.ElapsedTime * 1000) + 1;
-        Random random = new Random(seed); // Create random here
+        Random random = new Random(seed);
 
         foreach ((
             RefRO<LocalTransform> localTransform,
@@ -51,7 +51,7 @@ partial struct EnemySpawningSystem : ISystem
         float3 position = random.NextFloat3(new float3(-50, 0, -50), new float3(50, 0, 50));
 
         if (!SystemAPI.HasSingleton<PhysicsWorldSingleton>())
-            return position; // fallback if physics not ready
+            return position;
 
         var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
 

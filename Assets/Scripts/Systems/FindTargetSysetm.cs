@@ -1,6 +1,7 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
@@ -15,23 +16,16 @@ partial struct FindTargetSysetm : ISystem
         CollisionWorld collisionWorld = physicsWorldSingleton.CollisionWorld;
         NativeList<DistanceHit> distanceHitList = new NativeList<DistanceHit>(Allocator.Temp);
 
-        foreach ((
-            RefRO<LocalTransform> localTransform,
-            RefRW<FindTarget> findTarget,
-            RefRW<Target> target,
-            RefRW<FindTeam> findTeam,
-            RefRW < UnitMover > unitMover
-            ,RefRW<NavAgentComponent> navAgent
-            ) 
-
-            in SystemAPI.Query<
-                RefRO<LocalTransform>,
-                RefRW<FindTarget>,
-                RefRW<Target>,
-                RefRW<FindTeam>,
-                RefRW<UnitMover>
-                ,RefRW<NavAgentComponent>
-                >())
+        foreach (var (localTransform, findTarget, target, findTeam, unitMover, navAgent, entity) in
+             SystemAPI.Query<
+                 RefRO<LocalTransform>,
+                 RefRW<FindTarget>,
+                 RefRW<Target>,
+                 RefRW<FindTeam>,
+                 RefRW<UnitMover>,
+                 RefRW<NavAgentComponent>>()
+                      .WithEntityAccess()
+                      .WithNone<DeadTag>())
         {
             findTarget.ValueRW.timer -= SystemAPI.Time.DeltaTime;
 
@@ -51,24 +45,34 @@ partial struct FindTargetSysetm : ISystem
             };
             if (collisionWorld.OverlapSphere(localTransform.ValueRO.Position, findTarget.ValueRO.range, ref distanceHitList, collisionfilter))
             {
+                Entity closestTarget = Entity.Null;
+                float closestDistance = float.MaxValue;
+
                 foreach (DistanceHit distanceHit in distanceHitList)
                 {
                     Unit targetUnit = SystemAPI.GetComponent<Unit>(distanceHit.Entity);
 
                     if (targetUnit.faction == findTarget.ValueRO.targetFaction)
                     {
-                        target.ValueRW.targetEntity = distanceHit.Entity;
-                        navAgent.ValueRW.targetEntity = distanceHit.Entity;
-
-                        // Get the target's position and set it in UnitMover
                         LocalTransform targetTransform = SystemAPI.GetComponent<LocalTransform>(distanceHit.Entity);
-                        unitMover.ValueRW.targetPosition = targetTransform.Position;
+                        float distance = math.distance(localTransform.ValueRO.Position, targetTransform.Position);
 
-                        break;
+                        if (distance < closestDistance)
+                        {
+                            closestDistance = distance;
+                            closestTarget = distanceHit.Entity;
+                        }
                     }
                 }
+                if (closestTarget != Entity.Null)
+                {
+                    target.ValueRW.targetEntity = closestTarget;
+                    navAgent.ValueRW.targetEntity = closestTarget;
+
+                    LocalTransform targetTransform = SystemAPI.GetComponent<LocalTransform>(closestTarget);
+                    unitMover.ValueRW.targetPosition = targetTransform.Position;
+                }
             }
-            
         }
     }
 }
