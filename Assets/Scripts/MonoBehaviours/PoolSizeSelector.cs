@@ -16,7 +16,7 @@ public class PoolSizeSelector : MonoBehaviour
         var entityManager = world.EntityManager;
 
         poolSizeEntity = entityManager.CreateEntity(typeof(EnemyPoolSize));
-        entityManager.SetComponentData(poolSizeEntity, new EnemyPoolSize { Value = 500 }); // default value
+        entityManager.SetComponentData(poolSizeEntity, new EnemyPoolSize { Value = 500 });
 
 
     }

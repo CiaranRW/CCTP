@@ -32,7 +32,7 @@ public partial class EnemyPoolingSystem : SystemBase
         if (EntityManager.HasComponent<UnitMover>(entity))
         {
             var mover = EntityManager.GetComponentData<UnitMover>(entity);
-            mover.moveSpeed = 0f;
+            mover.moveSpeed = 0.2f;
             EntityManager.SetComponentData(entity, mover);
         }
 

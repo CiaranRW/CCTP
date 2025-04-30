@@ -67,7 +67,30 @@ partial struct EnemySpawningSystem : ISystem
     }
     private float3 GetPositionOutsideOfCameraRange(ref SystemState state, ref Random random)
     {
-        float3 position = random.NextFloat3(new float3(-50, 0, -50), new float3(50, 0, 50));
+        float3 position = float3.zero;
+        const int maxAttempts = 10;
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            float3 randomPos = random.NextFloat3(new float3(-50, 0, -50), new float3(50, 0, 50));
+            Vector3 navQueryPos = new Vector3(randomPos.x, 0.5f, randomPos.z);
+
+            if (UnityEngine.AI.NavMesh.SamplePosition(navQueryPos, out var hit, 50f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                position = new float3(hit.position.x, hit.position.y, hit.position.z);
+                Debug.DrawRay(navQueryPos, Vector3.up * 2f, Color.green, 2f);
+                break;
+            }
+            else
+            {
+                Debug.DrawRay(navQueryPos, Vector3.up * 2f, Color.red, 2f);
+            }
+        }
+
+        if (position.Equals(float3.zero))
+        {
+            position = random.NextFloat3(new float3(-50, 0, -50), new float3(50, 0, 50));
+        }
 
         if (!SystemAPI.HasSingleton<PhysicsWorldSingleton>())
             return position;
@@ -86,13 +109,9 @@ partial struct EnemySpawningSystem : ISystem
             }
         };
 
-        if (collisionWorld.CastRay(rayInput, out var hit))
+        if (collisionWorld.CastRay(rayInput, out var groundHit))
         {
-            position.y = hit.Position.y + 0.2f;
-        }
-        else
-        {
-            position.y = 0;
+            position.y = groundHit.Position.y + 0.1f;
         }
 
         return position;
