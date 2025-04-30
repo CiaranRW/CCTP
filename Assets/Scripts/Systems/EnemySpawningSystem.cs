@@ -5,12 +5,24 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using Random = Unity.Mathematics.Random;
 using Unity.Physics;
+using System.Linq;
 
 partial struct EnemySpawningSystem : ISystem
 {
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+        int redEntityCount = 0;
+
+        foreach (var entity in SystemAPI.Query<RefRO<Red>>())
+        {
+            redEntityCount++;
+        }
+
+        if (redEntityCount >= 10)
+            return;
+
         EntitiesReferences entitiesReferences = SystemAPI.GetSingleton<EntitiesReferences>();
 
         EntityCommandBuffer entityCommandBuffer =
@@ -32,18 +44,25 @@ partial struct EnemySpawningSystem : ISystem
 
             enemySpawner.ValueRW.timer = enemySpawner.ValueRO.timerMax;
 
-            for (int i = 0; i < 5; i++)
-            {
-                float3 spawnPosition = GetPositionOutsideOfCameraRange(ref state, ref random);
 
-                Entity entity = state.EntityManager.Instantiate(entitiesReferences.player);
-                SystemAPI.SetComponent(entity, new LocalTransform
-                {
-                    Position = spawnPosition,
-                    Rotation = quaternion.identity,
-                    Scale = 1f
-                });
+            float3 spawnPosition = GetPositionOutsideOfCameraRange(ref state, ref random);
+
+            Entity entity = state.EntityManager.Instantiate(entitiesReferences.humanPrefab);
+            SystemAPI.SetComponent(entity, new LocalTransform
+            {
+                Position = spawnPosition,
+                Rotation = quaternion.identity,
+                Scale = 1f
+            });
+
+            if (state.EntityManager.HasComponent<MoveTimer>(entity))
+            {
+                MoveTimer moveTimer = state.EntityManager.GetComponentData<MoveTimer>(entity);
+                moveTimer.timer = random.NextFloat(moveTimer.minTime, moveTimer.maxTime);
+                state.EntityManager.SetComponentData(entity, moveTimer);
             }
+
+
         }
     }
     private float3 GetPositionOutsideOfCameraRange(ref SystemState state, ref Random random)
@@ -79,5 +98,3 @@ partial struct EnemySpawningSystem : ISystem
         return position;
     }
 }
-
-

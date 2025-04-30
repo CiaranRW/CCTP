@@ -107,7 +107,7 @@ public partial class EnemySpawnerSystem : SystemBase
         if (EntityManager.HasComponent<UnitMover>(entity))
         {
             var unitMover = EntityManager.GetComponentData<UnitMover>(entity);
-            unitMover.moveSpeed = 0.5f;
+            unitMover.moveSpeed = 0.25f;
             EntityManager.SetComponentData(entity, unitMover);
         }
 
@@ -119,7 +119,7 @@ public partial class EnemySpawnerSystem : SystemBase
 
         EntitiesReferences references = SystemAPI.GetSingleton<EntitiesReferences>();
 
-        Entity prefab = references.BenemyPrefab;
+        Entity prefab = references.zombiePrefab;
         PhysicsCollider originalCollider = EntityManager.GetComponentData<PhysicsCollider>(prefab);
 
         EntityManager.SetComponentData(entity, originalCollider);

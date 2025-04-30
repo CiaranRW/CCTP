@@ -4,9 +4,8 @@ using UnityEngine;
 public class EntitiesReferencesAuthoring : MonoBehaviour
 {
 
-    public GameObject BenemyPrefab;
-    public GameObject RenemyPrefab;
-    public GameObject player;
+    public GameObject zombiePrefab;
+    public GameObject humanPrefab;
 
     public class Baker : Baker<EntitiesReferencesAuthoring> 
     {
@@ -15,9 +14,8 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new EntitiesReferences
             {
-                BenemyPrefab = GetEntity(authoring.BenemyPrefab, TransformUsageFlags.Dynamic),
-                RenemyPrefab = GetEntity(authoring.RenemyPrefab, TransformUsageFlags.Dynamic),
-                player = GetEntity(authoring.player, TransformUsageFlags.Dynamic)
+                zombiePrefab = GetEntity(authoring.zombiePrefab, TransformUsageFlags.Dynamic),
+                humanPrefab = GetEntity(authoring.humanPrefab, TransformUsageFlags.Dynamic),
             });
         }
     }
@@ -27,7 +25,6 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
 
 public struct EntitiesReferences : IComponentData
 {
-    public Entity BenemyPrefab;
-    public Entity RenemyPrefab;
-    public Entity player;
+    public Entity zombiePrefab;
+    public Entity humanPrefab;
 }

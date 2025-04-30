@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RedEnemySO
   m_EditorClassIdentifier: 
   level: 1
-  prefab: {fileID: 2152554737255048205, guid: 26ca6448a0a4ff743bbe369940009a00, type: 3}
+  prefab: {fileID: 5842899209259558917, guid: 7451558cfa08fb147932dc27e021d193, type: 3}
   health: 100
   speed: 5
   damage: 10

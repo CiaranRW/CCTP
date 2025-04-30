@@ -10,7 +10,6 @@ public class EnemyCounterUI : MonoBehaviour
     EntityManager entitiyManager;
     EntityQuery entityQuery;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
         entitiyManager = World.DefaultGameObjectInjectionWorld.EntityManager;
@@ -22,6 +21,6 @@ public class EnemyCounterUI : MonoBehaviour
     {
         int count = entityQuery.CalculateEntityCount();
         enemyCountText.text = $"Enemies: {count}";
-        Debug.Log(count);
+        //Debug.Log(count);
     }
 }

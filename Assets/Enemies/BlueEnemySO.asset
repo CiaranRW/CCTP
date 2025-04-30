@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BlueEnemySO
   m_EditorClassIdentifier: 
   level: 1
-  prefab: {fileID: 5819684605672807038, guid: 70e2fbc7e746b8f429b7298e121138fa, type: 3}
+  prefab: {fileID: 2335957657305793453, guid: 70e2fbc7e746b8f429b7298e121138fa, type: 3}
   health: 50
   speed: 10
   damage: 10
