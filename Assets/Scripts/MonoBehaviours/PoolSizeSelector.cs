@@ -6,6 +6,8 @@ public class PoolSizeSelector : MonoBehaviour
 {
     public TMP_InputField inputField;
     private Entity poolSizeEntity;
+    private bool isValid = false;
+    public GameObject loadingscreen;
 
 
     void Start()
@@ -17,27 +19,43 @@ public class PoolSizeSelector : MonoBehaviour
 
         poolSizeEntity = entityManager.CreateEntity(typeof(EnemyPoolSize));
         entityManager.SetComponentData(poolSizeEntity, new EnemyPoolSize { Value = 500 });
-
-
     }
 
     void OnValueChanged(string value)
     {
         if (int.TryParse(value, out int poolSize))
         {
-            var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-            entityManager.SetComponentData(poolSizeEntity, new EnemyPoolSize { Value = poolSize });
+            if (poolSize <= 3000 && poolSize >= 0)
+            {
+                var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+                entityManager.SetComponentData(poolSizeEntity, new EnemyPoolSize { Value = poolSize });
+                isValid = true;
+            }
+            else
+            {
+                isValid = false;
+            }
         }
         else
         {
             Debug.Log("Invalid pool size.");
+            isValid = false;
         }
     }
 
     public void UpdatePool()
     {
-        var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        var loadingReadyEntity = entityManager.CreateEntity(typeof(LoadingCompleteTag));
+        if (isValid)
+        {
+            var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+            var loadingReadyEntity = entityManager.CreateEntity(typeof(LoadingCompleteTag));
+            loadingscreen.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("please insert a valid number");
+        }
+
     }
 }
 public struct EnemyPoolSize : IComponentData

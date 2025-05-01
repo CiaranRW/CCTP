@@ -20,7 +20,7 @@ partial struct EnemySpawningSystem : ISystem
             redEntityCount++;
         }
 
-        if (redEntityCount >= 10)
+        if (redEntityCount >= 20)
             return;
 
         EntitiesReferences entitiesReferences = SystemAPI.GetSingleton<EntitiesReferences>();
